@@ -1,0 +1,440 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized HR administrators who have access to the HR Salary CMS.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Google email of the admin",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Full display name of admin",
+          "maxLength": 100
+        },
+        "role": {
+          "type": "string",
+          "description": "Role level",
+          "enum": ["superadmin", "hr_manager"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["email", "role"]
+    },
+    "Employee": {
+      "title": "Employee",
+      "description": "Company employee record with Telegram Chat ID and banking details.",
+      "type": "object",
+      "properties": {
+        "employeeId": {
+          "type": "string",
+          "description": "Unique Employee ID (e.g., EMP001)",
+          "maxLength": 50,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "employeeName": {
+          "type": "string",
+          "description": "Employee Full Name (supports Khmer, Chinese, English)",
+          "maxLength": 120
+        },
+        "department": {
+          "type": "string",
+          "description": "Department name",
+          "maxLength": 100
+        },
+        "position": {
+          "type": "string",
+          "description": "Job position or title",
+          "maxLength": 100
+        },
+        "telegramUsername": {
+          "type": "string",
+          "description": "Telegram @username",
+          "maxLength": 60
+        },
+        "telegramChatId": {
+          "type": "string",
+          "description": "Telegram numeric Chat ID entered manually by HR",
+          "maxLength": 32
+        },
+        "abaAccount": {
+          "type": "string",
+          "description": "ABA bank account number",
+          "maxLength": 50
+        },
+        "abaAccountName": {
+          "type": "string",
+          "description": "ABA bank account name",
+          "maxLength": 100
+        },
+        "status": {
+          "type": "string",
+          "description": "Employment status",
+          "enum": ["active", "inactive"]
+        },
+        "createdDate": {
+          "type": "string",
+          "description": "Creation ISO date"
+        },
+        "updatedDate": {
+          "type": "string",
+          "description": "Update ISO date"
+        }
+      },
+      "required": ["employeeId", "employeeName", "status"]
+    },
+    "PayrollMonth": {
+      "title": "PayrollMonth",
+      "description": "Monthly payroll period configuration and summary.",
+      "type": "object",
+      "properties": {
+        "monthId": {
+          "type": "string",
+          "description": "Year-Month identifier like 2026-11",
+          "maxLength": 10
+        },
+        "title": {
+          "type": "string",
+          "description": "Display name like November 2026",
+          "maxLength": 100
+        },
+        "year": {
+          "type": "number",
+          "description": "Year"
+        },
+        "month": {
+          "type": "number",
+          "description": "Month 1-12"
+        },
+        "status": {
+          "type": "string",
+          "description": "Payroll status",
+          "enum": ["draft", "imported", "confirmed", "locked"]
+        },
+        "totalEmployees": {
+          "type": "number",
+          "description": "Number of records in this month"
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total net payout amount in USD"
+        },
+        "createdDate": {
+          "type": "string",
+          "description": "Creation timestamp"
+        },
+        "updatedDate": {
+          "type": "string",
+          "description": "Update timestamp"
+        }
+      },
+      "required": ["monthId", "title", "year", "month", "status"]
+    },
+    "PayrollRecord": {
+      "title": "PayrollRecord",
+      "description": "Individual monthly salary record for an employee with original Excel fields.",
+      "type": "object",
+      "properties": {
+        "payrollRecordId": {
+          "type": "string",
+          "description": "Unique Payroll Record ID",
+          "maxLength": 64
+        },
+        "employeeId": {
+          "type": "string",
+          "description": "Associated Employee ID",
+          "maxLength": 50
+        },
+        "payrollMonth": {
+          "type": "string",
+          "description": "Month ID reference (e.g. 2026-11)",
+          "maxLength": 10
+        },
+        "employeeName": {
+          "type": "string",
+          "description": "Employee Name snapshot",
+          "maxLength": 120
+        },
+        "department": {
+          "type": "string",
+          "description": "Department snapshot",
+          "maxLength": 100
+        },
+        "telegramUsername": {
+          "type": "string",
+          "description": "Telegram @username",
+          "maxLength": 60
+        },
+        "telegramChatId": {
+          "type": "string",
+          "description": "Telegram Chat ID reference",
+          "maxLength": 32
+        },
+        "telegramBindingStatus": {
+          "type": "string",
+          "description": "Telegram binding status",
+          "enum": ["registered", "not_registered", "invalid_chat_id"]
+        },
+        "netSalary": {
+          "type": "number",
+          "description": "Net pay in USD"
+        },
+        "salaryFields": {
+          "type": "object",
+          "description": "All original Excel columns B to AC preserving raw keys and values"
+        },
+        "messageStatus": {
+          "type": "string",
+          "description": "Telegram message delivery status",
+          "enum": ["not_sent", "sending", "sent", "failed"]
+        },
+        "messageSentAt": {
+          "type": "string",
+          "description": "Message timestamp"
+        },
+        "confirmationStatus": {
+          "type": "string",
+          "description": "Confirmation status",
+          "enum": ["pending", "confirmed", "disputed", "locked"]
+        },
+        "confirmedAt": {
+          "type": "string",
+          "description": "Confirmation timestamp"
+        },
+        "disputeRemark": {
+          "type": "string",
+          "description": "Dispute remark by employee",
+          "maxLength": 500
+        },
+        "createdDate": {
+          "type": "string",
+          "description": "Created date"
+        },
+        "updatedDate": {
+          "type": "string",
+          "description": "Updated date"
+        }
+      },
+      "required": ["payrollRecordId", "employeeId", "payrollMonth", "confirmationStatus"]
+    },
+    "TelegramSettings": {
+      "title": "TelegramSettings",
+      "description": "Configuration settings for Telegram bot integration.",
+      "type": "object",
+      "properties": {
+        "botToken": {
+          "type": "string",
+          "description": "Bot API token",
+          "maxLength": 128
+        },
+        "botUsername": {
+          "type": "string",
+          "description": "Bot @username",
+          "maxLength": 64
+        },
+        "botName": {
+          "type": "string",
+          "description": "Bot display name",
+          "maxLength": 100
+        },
+        "webhookUrl": {
+          "type": "string",
+          "description": "Webhook URL",
+          "maxLength": 256
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Is bot active"
+        },
+        "updatedDate": {
+          "type": "string",
+          "description": "Updated timestamp"
+        }
+      }
+    },
+    "MessageLog": {
+      "title": "MessageLog",
+      "description": "Log of Telegram messages prepared or sent.",
+      "type": "object",
+      "properties": {
+        "logId": {
+          "type": "string",
+          "description": "Log ID",
+          "maxLength": 64
+        },
+        "employeeId": {
+          "type": "string",
+          "description": "Employee ID",
+          "maxLength": 50
+        },
+        "payrollMonth": {
+          "type": "string",
+          "description": "Payroll Month",
+          "maxLength": 10
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the message",
+          "enum": ["draft", "queued", "sent", "failed"]
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp"
+        }
+      },
+      "required": ["logId", "employeeId", "payrollMonth", "status"]
+    },
+    "ConfirmationRecord": {
+      "title": "ConfirmationRecord",
+      "description": "Employee salary confirmation record.",
+      "type": "object",
+      "properties": {
+        "confirmationId": {
+          "type": "string",
+          "description": "Confirmation ID",
+          "maxLength": 64
+        },
+        "payrollRecordId": {
+          "type": "string",
+          "description": "Payroll record ID",
+          "maxLength": 64
+        },
+        "employeeId": {
+          "type": "string",
+          "description": "Employee ID",
+          "maxLength": 50
+        },
+        "status": {
+          "type": "string",
+          "description": "Confirmation state",
+          "enum": ["pending", "confirmed", "disputed"]
+        },
+        "confirmedAt": {
+          "type": "string",
+          "description": "Confirmation timestamp"
+        }
+      },
+      "required": ["confirmationId", "payrollRecordId", "employeeId", "status"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Audit trail of actions taken in the HR Salary CMS.",
+      "type": "object",
+      "properties": {
+        "logId": {
+          "type": "string",
+          "description": "Audit log ID",
+          "maxLength": 64
+        },
+        "adminEmail": {
+          "type": "string",
+          "description": "Email of admin who performed action",
+          "maxLength": 128
+        },
+        "action": {
+          "type": "string",
+          "description": "Action performed (e.g., employee_created, payroll_imported)",
+          "maxLength": 100
+        },
+        "details": {
+          "type": "string",
+          "description": "Details of the action",
+          "maxLength": 500
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp"
+        }
+      },
+      "required": ["logId", "adminEmail", "action", "timestamp"]
+    },
+    "TelegramUpdate": {
+      "title": "TelegramUpdate",
+      "description": "Idempotent record of processed Telegram updates to prevent duplicate handling.",
+      "type": "object",
+      "properties": {
+        "updateId": {
+          "type": "number",
+          "description": "Unique numeric update ID from Telegram"
+        },
+        "chatId": {
+          "type": "string",
+          "description": "Sender Telegram Chat ID",
+          "maxLength": 32
+        },
+        "command": {
+          "type": "string",
+          "description": "Command or action handled (e.g., /start)",
+          "maxLength": 64
+        },
+        "processedAt": {
+          "type": "string",
+          "description": "ISO timestamp when processed"
+        }
+      },
+      "required": ["updateId", "processedAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": {
+        "$ref": "#/entities/Admin"
+      },
+      "description": "Allowed HR Administrators"
+    },
+    "/employees/{employeeDocId}": {
+      "schema": {
+        "$ref": "#/entities/Employee"
+      },
+      "description": "Employee profiles with Telegram Chat ID and ABA accounts"
+    },
+    "/payrollMonths/{monthId}": {
+      "schema": {
+        "$ref": "#/entities/PayrollMonth"
+      },
+      "description": "Monthly payroll cycles"
+    },
+    "/payrollRecords/{recordId}": {
+      "schema": {
+        "$ref": "#/entities/PayrollRecord"
+      },
+      "description": "Individual monthly salary records with original Excel fields"
+    },
+    "/telegramSettings/{settingId}": {
+      "schema": {
+        "$ref": "#/entities/TelegramSettings"
+      },
+      "description": "Telegram configuration"
+    },
+    "/messageLogs/{logId}": {
+      "schema": {
+        "$ref": "#/entities/MessageLog"
+      },
+      "description": "Telegram message logs"
+    },
+    "/confirmationRecords/{confirmationId}": {
+      "schema": {
+        "$ref": "#/entities/ConfirmationRecord"
+      },
+      "description": "Employee confirmation records"
+    },
+    "/auditLogs/{logId}": {
+      "schema": {
+        "$ref": "#/entities/AuditLog"
+      },
+      "description": "Audit log records"
+    },
+    "/telegramUpdates/{updateId}": {
+      "schema": {
+        "$ref": "#/entities/TelegramUpdate"
+      },
+      "description": "Idempotent records of processed Telegram updates"
+    }
+  }
+}

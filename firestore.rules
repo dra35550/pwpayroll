@@ -1,0 +1,79 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // Bootstrap superadmin email and allowlist check
+    function isAllowedAdmin() {
+      return isEmailVerified() && (
+        request.auth.token.email == 'xiao89031@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 1. Admins Collection
+    match /admins/{adminId} {
+      allow read: if isEmailVerified();
+      allow write: if isAllowedAdmin() && isValidId(adminId);
+    }
+
+    // 2. Employees Collection
+    match /employees/{employeeDocId} {
+      allow read, write: if isAllowedAdmin() && isValidId(employeeDocId);
+    }
+
+    // 3. Payroll Months Collection
+    match /payrollMonths/{monthId} {
+      allow read, write: if isAllowedAdmin() && isValidId(monthId);
+    }
+
+    // 4. Payroll Records Collection
+    match /payrollRecords/{recordId} {
+      allow read, write: if isAllowedAdmin() && isValidId(recordId);
+    }
+
+    // 5. Telegram Settings Collection
+    match /telegramSettings/{settingId} {
+      allow read, write: if isValidId(settingId);
+    }
+
+    // 6. Message Logs Collection
+    match /messageLogs/{logId} {
+      allow read, write: if isAllowedAdmin() && isValidId(logId);
+    }
+
+    // 7. Confirmation Records Collection
+    match /confirmationRecords/{confirmationId} {
+      allow read, write: if isAllowedAdmin() && isValidId(confirmationId);
+    }
+
+    // 8. Audit Logs Collection
+    match /auditLogs/{logId} {
+      allow read, write: if isAllowedAdmin() && isValidId(logId);
+    }
+
+    // 9. Processed Telegram Updates Collection (Idempotent deduplication tracking)
+    match /telegramUpdates/{updateId} {
+      allow read, write: if isValidId(updateId);
+    }
+  }
+}

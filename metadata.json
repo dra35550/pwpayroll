@@ -1,0 +1,6 @@
+{
+  "name": "HR Salary CMS",
+  "description": "Professional HR Salary Management System with Google Authentication, Employee Directory, Monthly Payroll Processing, and Excel Import.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
